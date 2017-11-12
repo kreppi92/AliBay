@@ -40,13 +40,13 @@ class UserPage extends Component {
             <div>
                 {this.state.user.avatar ?
                     <div>
-                    <div className="itemPage">
+                    <div className="userPage">
                         <div>
-                            <li><img src={this.state.user.avatar} alt={this.state.user.username} className="fullsizeImage" /></li>
+                            <div><img src={this.state.user.avatar} alt={this.state.user.username} className="fullsizeImage" /></div>
                         </div>
                         <div className="userInfo">
-                            <li>{this.state.user.username}</li>
-                            <li>Email: {this.state.user.email}</li>
+                            <div>{this.state.user.username}</div>
+                            <div>Email: {this.state.user.email}</div>
                         </div>
                     </div>
                     <div>
