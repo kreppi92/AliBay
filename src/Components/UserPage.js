@@ -17,16 +17,19 @@ class UserPage extends Component {
                 username: ""
             },
             allItemsForSale: [],
+            showItemsForSale: true,
             allItemsSold: [],
-            allItemsBought: []
+            showItemsSold: true,
+            allItemsBought: [],
+            showItemsBought: true,
         }
     }
 
     componentDidMount() {
         this.getUserInfo()
-        allItemsForSale(this.props.userID).then(data => this.setState({allItemsForSale: data}));
-        allItemsSold(this.props.userID).then(data => this.setState({allItemsSold: data}));
-        allItemsBought(this.props.userID).then(data => this.setState({allItemsBought: data}));
+        allItemsForSale(this.props.userID).then(data => this.setState({ allItemsForSale: data }));
+        allItemsSold(this.props.userID).then(data => this.setState({ allItemsSold: data }));
+        allItemsBought(this.props.userID).then(data => this.setState({ allItemsBought: data }));
     }
 
     getUserInfo = () => {
@@ -34,33 +37,50 @@ class UserPage extends Component {
             .then(data => this.setState({ user: data.val() }))
     }
 
+
     render() {
-       
         return (
             <div>
                 {this.state.user.avatar ?
                     <div>
-                    <div className="userPage">
-                        <div>
-                            <div><img src={this.state.user.avatar} alt={this.state.user.username} className="fullsizeImage" /></div>
+                        <div className="userPage">
+                            <div>
+                                <div>
+                                    <img src={this.state.user.avatar} alt={this.state.user.username} className="imageDisplay" />
+                                </div>
+                            </div>
+                            <div className="userInfo">
+                                <div>{this.state.user.username}</div>
+                                <div>Email: {this.state.user.email}</div>
+                            </div>
                         </div>
-                        <div className="userInfo">
-                            <div>{this.state.user.username}</div>
-                            <div>Email: {this.state.user.email}</div>
+                        <div className="tabs">
                         </div>
-                    </div>
-                    <div>
-                        <h2>All Items For Sale</h2>
-                        {this.state.allItemsForSale.length ? <ItemGrid array={this.state.allItemsForSale}/> : false}
-                    </div>
-                    <div>
-                        <h2>All Items Sold</h2>
-                        {this.state.allItemsSold.length ? <ItemGrid array={this.state.allItemsSold}/> : false}
-                    </div>
-                    <div>
-                        <h2>All Items Bought</h2>
-                        {this.state.allItemsBought.length ? <ItemGrid array={this.state.allItemsBought}/> : false}
-                    </div>
+                        {this.state.showItemsForSale ?
+                            (<div>
+                                <h2>All Items For Sale</h2>
+                                <div ref={r => this.itemsForSale = r} className="itemDisplay">
+                                    {this.state.allItemsForSale.length ? <ItemGrid array={this.state.allItemsForSale} /> : false}
+                                </div>
+                            </div>)
+                            : false}
+                        {this.state.showItemsSold ?
+                            (<div>
+                                <h2>All Items Sold</h2>
+                                <div ref={r => this.itemsSold = r} className="itemDisplay">
+                                    {this.state.allItemsSold.length ? <ItemGrid array={this.state.allItemsSold} /> : false}
+                                </div>
+                            </div>)
+                            : false}
+                        {this.state.showItemsBought ?
+                            (<div>
+                                <h2>All Items Bought</h2>
+                                <div ref={r => this.itemsBought = r} className="itemDisplay">
+                                    {this.state.allItemsBought.length ? <ItemGrid array={this.state.allItemsBought} /> : false}
+                                </div>
+                            </div>)
+                            : false}
+
                     </div>
                     : false}
             </div>

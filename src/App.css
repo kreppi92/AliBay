@@ -141,3 +141,55 @@ body {
   align-items: center;
   vertical-align: center;
 }
+
+.avatar {
+  min-height: 80%;
+  max-height: 75px;
+  border-radius: 50%;
+}
+
+.imageDisplay {
+  min-height: 250px;
+  max-height: 300px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.itemDisplay {
+  display: flex;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+button {
+  background-color: #FDD2A1;
+  border: solid;
+  border-width: 2px;
+  border-color: #FFFFFF;
+  color: #FFFFFF;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 0px;
+  vertical-align: center;
+}
+
+
+button:hover {
+  background-color: #F05A28;
+  color: white;
+  transition: 0.5s;
+}
+
+input[type=text] {
+  width: 200px;
+  padding: 5px 10px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}

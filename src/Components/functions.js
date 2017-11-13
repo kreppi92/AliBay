@@ -1,6 +1,6 @@
 import firebase from '../fire.js';
-
-let database = firebase.database();
+const provider = new firebase.auth.GoogleAuthProvider();
+const database = firebase.database();
 
 /*
 Before implementing the login functionality, use this function to generate a new UID every time.
@@ -16,17 +16,25 @@ parameter: [uid] the UID of the user.
 returns: A promise
 */
 
-export async function initializeUserIfNeeded(uid, displayName, email, photoURL) {
-    return database.ref(`/users/${uid}`).once('value').then(snapshot => {
-        if (!snapshot.val()) {
-            database.ref(`/users/${uid}`).set({username: "name", email: "none@none.com", avatar: "url"})
-        }
-    })
+export async function initializeUserIfNeeded() {
+    let user = {};
+    return firebase.auth().signInWithPopup(provider)
+        .then(result => {
+            user = {
+                uid: result.user.uid,
+                email: result.user.email,
+                username: result.user.displayName,
+                avatar: result.user.photoURL,
+            }
+            database.ref(`/users/${user.uid}`).once('value').then(snapshot => {
+                if (!snapshot.val()) {
+                    database.ref(`/users/${user.uid}`).set({ username: user.username, email: user.email, avatar: user.avatar })
+                }
+            }
+            )
+        }).then( () => user)
 }
 
-export async function login(uid) {
-
-}
 
 // user.user.displayName
 // user.user.email
@@ -47,7 +55,7 @@ export async function createListing(sellerID, price, blurb, imageURL) {
     const listingID = "item" + genUID();
     Promise.all([
         await database.ref(`/itemsForSale/${sellerID}/${listingID}`).set(listingID),
-        await database.ref(`/items/${listingID}`).set({listingID: listingID, sellerID: sellerID, imageURL: imageURL, price: price, blurb: blurb, rating: {totalStars: 0, timesRated: 0}})
+        await database.ref(`/items/${listingID}`).set({ listingID: listingID, sellerID: sellerID, imageURL: imageURL, price: price, blurb: blurb, rating: { totalStars: 0, timesRated: 0 } })
     ]);
     return listingID;
 }
@@ -150,8 +158,8 @@ export async function searchForListings(searchTerm) {
     let searchResults = []
     let lst = await allListings();
     const itemObjectsToSearch = (await database.ref(`/items/`).once('value')).val();
-    for (let itemIndex=0; itemIndex<lst.length; itemIndex++) {
-        if (itemObjectsToSearch[lst[itemIndex]].blurb.search(searchTerm)>-1) {
+    for (let itemIndex = 0; itemIndex < lst.length; itemIndex++) {
+        if (itemObjectsToSearch[lst[itemIndex]].blurb.search(searchTerm) > -1) {
             searchResults.push(lst[itemIndex])
         }
     }
@@ -164,5 +172,5 @@ export async function searchForUsers(searchTerm) {
 
 export async function giveRating(listingID, rating) {
     const itemInfo = (await database.ref(`/items/${listingID}/rating`).once('value')).val()
-    await database.ref(`/items/${listingID}/rating`).set({totalStars: itemInfo.totalStars + rating, timesRated: itemInfo.timesRated + 1})
+    await database.ref(`/items/${listingID}/rating`).set({ totalStars: itemInfo.totalStars + rating, timesRated: itemInfo.timesRated + 1 })
 }
